@@ -34,15 +34,17 @@ namespace Test
                                 using (TTransaction t6 = t4.GetTransaction("6级事务"))
                                 {
                                     document.AddEntity(new GclZhu("柱4", 1, 1, 1));
-
-                                    var zhuListInTrans = document.OfType<GclZhu>();
                                 }
+
+                                var zhuListInTrans = document.OfType<GclZhu>();
+                                Assert.AreEqual(zhuListInTrans.Count, 6);
                             }
                         }
                     }
 
                     t2.RoalBack();
                     var zhuListInTransOnRoalBack = document.OfType<GclZhu>();
+                    Assert.AreEqual(zhuListInTransOnRoalBack.Count, 1);
                 }
 
                 using (TTransaction t2 = t1.GetTransaction("2级事务2"))
