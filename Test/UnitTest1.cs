@@ -39,6 +39,11 @@ namespace Test
                                 var zhuListInTrans = document.OfType<GclZhu>();
                                 Assert.AreEqual(zhuListInTrans.Count, 6);
                             }
+
+                            t4.RoalBack();
+
+                            var t4List= document.OfType<GclZhu>();
+                            Assert.AreEqual(t4List.Count, 3);
                         }
                     }
 
