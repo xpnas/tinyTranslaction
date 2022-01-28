@@ -44,10 +44,15 @@ namespace tinyTransaction
             _isSbumit = true;
         }
 
-        public void Dispose()
+        protected virtual void Dispose(bool disposing)
         {
             if (!_isSbumit)
                 Commit();
+        }
+
+        public void Dispose()
+        {
+            Dispose(true);
             GC.SuppressFinalize(this);
         }
 
