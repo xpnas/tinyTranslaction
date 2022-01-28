@@ -63,6 +63,8 @@ namespace Test
             var qList = document.OfType<GclQiang>();
             var zhuList = document.OfType<GclZhu>();
             document.Save();
+            Assert.AreEqual(qList.Count,1);
+            Assert.AreEqual(zhuList.Count, 3);
         }
     }
 }

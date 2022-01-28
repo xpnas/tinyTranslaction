@@ -40,7 +40,7 @@ namespace tinyTransaction
 
         public void Save() 
         { 
-            //TODO
+            // TODO
         }
 
         public List<CanTranscationEntity> Entities { get; private set; }
