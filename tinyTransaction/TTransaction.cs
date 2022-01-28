@@ -14,11 +14,12 @@ namespace tinyTransaction
             _canTranscation.TranscationStack.Push(_transcationId);
         }
 
-        private int _transcationId;
+        private readonly int _transcationId;
+
+        private readonly ICanTranscation _canTranscation;
 
         private bool _isSbumit = false;
 
-        private ICanTranscation _canTranscation;
 
         public string Path { get; private set; }
 
@@ -30,7 +31,7 @@ namespace tinyTransaction
         public void Commit()
         {
             TransCheck();
-            _canTranscation.CommitDo();
+            _canTranscation.DoCommit();
             _canTranscation.TranscationStack.Pop();
             _isSbumit = true;
         }
@@ -38,7 +39,7 @@ namespace tinyTransaction
         public void RoalBack()
         {
             TransCheck();
-            _canTranscation.RoalDo();
+            _canTranscation.DoRoal();
             _canTranscation.TranscationStack.Pop();
             _isSbumit = true;
         }
@@ -47,12 +48,13 @@ namespace tinyTransaction
         {
             if (!_isSbumit)
                 Commit();
+            GC.SuppressFinalize(this);
         }
 
         public void TransCheck()
         {
             if (_canTranscation.TranscationId != _transcationId)
-                throw new Exception("has other trans not commit or roalback!");
+                throw new TranscationException("has other trans not commit or roalback!");
             
         }
     }

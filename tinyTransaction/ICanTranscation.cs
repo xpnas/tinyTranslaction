@@ -10,8 +10,13 @@ namespace tinyTransaction
 
         public Stack<int> TranscationStack { get; }
 
-        public void RoalDo();
+        public void DoRoal();
 
-        public void CommitDo();
+        public void DoCommit();
+
+        public TTransaction GetTransaction(string name);
+
+
+
     }
 }

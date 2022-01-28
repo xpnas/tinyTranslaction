@@ -11,14 +11,14 @@ namespace tinyTransaction
         public TDocument()
         {
             TranscationStack = new Stack<int>();
-            Entities = new List<ICanTranscationEntity>();
+            Entities = new List<CanTranscationEntity>();
         }
 
         public int TranscationId { get { return TranscationStack.Peek(); } }
 
         public Stack<int> TranscationStack { get; private set; }
 
-        public void CommitDo()
+        public void DoCommit()
         {
             Entities.ForEach(e => {
             
@@ -28,24 +28,24 @@ namespace tinyTransaction
         public TTransaction GetTransaction(string name) 
         {
             if (TranscationStack.Count > 0)
-                throw new Exception("only one transcation at one time");
+                throw new TranscationException("only one transcation at one time");
 
             return new TTransaction(name,this);
         }
 
-        public void RoalDo()
+        public void DoRoal()
         {
-            Entities.RemoveAll(new Predicate<ICanTranscationEntity>(e => { return e.TranscationId >= TranscationId; }));
+            Entities.RemoveAll(new Predicate<CanTranscationEntity>(e => { return e.TranscationId >= TranscationId; }));
         }
 
         public void Save() 
         { 
-        
+            //TODO
         }
 
-        public List<ICanTranscationEntity> Entities { get; private set; }
+        public List<CanTranscationEntity> Entities { get; private set; }
 
-        public void AddEntity(ICanTranscationEntity entity)
+        public void AddEntity(CanTranscationEntity entity)
         {
             entity.TranscationId = TranscationId;
             Entities.Add(entity);

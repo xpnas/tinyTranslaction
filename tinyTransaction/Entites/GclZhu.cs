@@ -4,7 +4,7 @@ using System.Text;
 
 namespace tinyTransaction.Entites
 {
-    public class GclZhu : ICanTranscationEntity
+    public class GclZhu : CanTranscationEntity
     {
         public GclZhu()
         {

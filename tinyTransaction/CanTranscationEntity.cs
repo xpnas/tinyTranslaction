@@ -4,7 +4,7 @@ using System.Text;
 
 namespace tinyTransaction
 {
-    public abstract class ICanTranscationEntity
+    public abstract class CanTranscationEntity
     {
         public int TranscationId { get; internal set; }
 
