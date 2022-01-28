@@ -1,5 +1,6 @@
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using tinyTransaction;
+using tinyTransaction.Entites;
 
 namespace Test
 {
@@ -10,16 +11,58 @@ namespace Test
         public void TestMethod1()
         {
             TDocument document = new TDocument();
-            var trans = document.GetTransaction("事务测试");
-            trans.Start();
-            if (1 == 1)
+            using (TTransaction t1 = document.GetTransaction("1级事务"))
             {
-                trans.Commit();
+                document.AddEntity(new GclZhu("柱1", 1, 1, 1));
+
+                using (TTransaction t2 = t1.GetTransaction("2级事务1"))
+                {
+                    document.AddEntity(new GclZhu("柱2", 1, 1, 1));
+
+                    using (TTransaction t3 = t2.GetTransaction("3级事务1"))
+                    {
+                        document.AddEntity(new GclZhu("柱3", 1, 1, 1));
+
+                        using (TTransaction t4 = t3.GetTransaction("4级事务"))
+                        {
+                            document.AddEntity(new GclZhu("柱4", 1, 1, 1));
+
+                            using (TTransaction t5 = t4.GetTransaction("5级事务"))
+                            {
+                                document.AddEntity(new GclZhu("柱4", 1, 1, 1));
+
+                                using (TTransaction t6 = t4.GetTransaction("6级事务"))
+                                {
+                                    document.AddEntity(new GclZhu("柱4", 1, 1, 1));
+
+                                    var zhuListInTrans = document.OfType<GclZhu>();
+                                }
+                            }
+                        }
+                    }
+
+                    t2.RoalBack();
+                    var zhuListInTransOnRoalBack = document.OfType<GclZhu>();
+                }
+
+                using (TTransaction t2 = t1.GetTransaction("2级事务2"))
+                {
+                    document.AddEntity(new GclZhu("柱4", 1, 1, 1));
+
+                    using (TTransaction t3 = t2.GetTransaction("2级事务2"))
+                    {
+                        document.AddEntity(new GclZhu("柱5", 1, 1, 1));
+                    }
+                }
+
+                using (TTransaction t2 = t1.GetTransaction("2级事务3"))
+                {
+                    document.AddEntity(new GclQiang("墙", 1));
+                }
             }
-            else
-            {
-                trans.RoalBack();
-            }
+            var qList = document.OfType<GclQiang>();
+            var zhuList = document.OfType<GclZhu>();
+            document.Save();
         }
     }
 }
