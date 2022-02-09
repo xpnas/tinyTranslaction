@@ -23,6 +23,7 @@ namespace tinyTransaction
             Entities.ForEach(e => {
             
             });
+            Entities.RemoveAll(new Predicate<CanTranscationEntity>(e => { return e.TranscationId + TranscationId == 0; }));
         }
 
         public TTransaction GetTransaction(string name) 
@@ -36,6 +37,12 @@ namespace tinyTransaction
         public void DoRoal()
         {
             Entities.RemoveAll(new Predicate<CanTranscationEntity>(e => { return e.TranscationId >= TranscationId; }));
+            Entities.ForEach(e =>
+            {
+                if (e.TranscationId < 0 && (e.TranscationId + TranscationId) > 0)
+                    e.TranscationId = 0 - e.TranscationId;
+            });
+            Entities.RemoveAll(new Predicate<CanTranscationEntity>(e => { return e.TranscationId + TranscationId == 0; }));
         }
 
         public void Save() 
@@ -51,9 +58,17 @@ namespace tinyTransaction
             Entities.Add(entity);
         }
 
-        public List<T> OfType<T>()
+        public void RemoveEntity(CanTranscationEntity entity)
         {
-            return Entities.OfType<T>().ToList();
+            if (Entities.Contains(entity))
+            {
+                entity.TranscationId =-entity.TranscationId;
+            }
+        }
+
+        public List<T> OfType<T>() where T:CanTranscationEntity
+        {
+            return Entities.OfType<T>().Where(e=>e.TranscationId>=0).ToList();
         }
     }
 }

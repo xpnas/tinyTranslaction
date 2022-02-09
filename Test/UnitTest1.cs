@@ -13,7 +13,9 @@ namespace Test
             TDocument document = new TDocument();
             using (TTransaction t1 = document.GetTransaction("1级事务"))
             {
-                document.AddEntity(new GclZhu("柱1", 1, 1, 1));
+                var del = new GclZhu("柱D", 1, 1, 1);
+
+                document.AddEntity(del);
 
                 using (TTransaction t2 = t1.GetTransaction("2级事务1"))
                 {
@@ -31,13 +33,14 @@ namespace Test
                             {
                                 document.AddEntity(new GclZhu("柱4", 1, 1, 1));
 
-                                using (TTransaction t6 = t4.GetTransaction("6级事务"))
+                                using (TTransaction t6 = t5.GetTransaction("6级事务"))
                                 {
                                     document.AddEntity(new GclZhu("柱4", 1, 1, 1));
                                 }
 
+                                document.RemoveEntity(del);
                                 var zhuListInTrans = document.OfType<GclZhu>();
-                                Assert.AreEqual(zhuListInTrans.Count, 6);
+                                Assert.AreEqual(zhuListInTrans.Count, 5);
                             }
 
                             t4.RoalBack();
